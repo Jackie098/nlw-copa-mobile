@@ -4,7 +4,6 @@ import * as AuthSession from "expo-auth-session";
 import * as WebBrowser from "expo-web-browser";
 
 WebBrowser.maybeCompleteAuthSession();
-
 interface UserProps {
   name: string;
   avatarUrl: string;
@@ -48,13 +47,13 @@ export function AuthContextProvider({ children }: AuthProviderProps) {
     }
   }
 
-  async function singWithGoogle(access_token: string) {
+  async function signWithGoogle(access_token: string) {
     console.log("TOKEN --> ", access_token);
   }
 
   useEffect(() => {
     if (response?.type === "success" && response.authentication?.accessToken) {
-      singWithGoogle(response.authentication.accessToken);
+      signWithGoogle(response.authentication.accessToken);
     }
   }, [response]);
 
