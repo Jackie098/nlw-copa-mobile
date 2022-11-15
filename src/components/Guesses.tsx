@@ -1,14 +1,17 @@
 import { Box, FlatList, useToast } from "native-base";
 import { useEffect, useState } from "react";
+import { Share } from "react-native";
 import { api } from "../services/api";
+import { EmptyMyPoolList } from "./EmptyMyPoolList";
 import { Game, GameProps } from "./Game";
 import { Loading } from "./Loading";
 
 interface Props {
   poolId: string;
+  code: string;
 }
 
-export function Guesses({ poolId }: Props) {
+export function Guesses({ poolId, code }: Props) {
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingGuess, setIsLoadingGuess] = useState(false);
   const [games, setGames] = useState<GameProps[]>([]);
@@ -39,7 +42,9 @@ export function Guesses({ poolId }: Props) {
 
   async function handleGuessConfirm(gameId: string) {
     try {
+      setIsLoading(true);
       setIsLoadingGuess(true);
+
       if (!firstTeamPoints.trim() || !secondTeamPoints.trim()) {
         return toast.show({
           title: "Informe o placar do palpite",
@@ -85,6 +90,12 @@ export function Guesses({ poolId }: Props) {
     }
   }
 
+  async function handleCodeShare() {
+    await Share.share({
+      message: code,
+    });
+  }
+
   useEffect(() => {
     fetchGames();
   }, [poolId]);
@@ -106,6 +117,9 @@ export function Guesses({ poolId }: Props) {
         />
       )}
       _contentContainerStyle={{ pb: 40 }}
+      ListEmptyComponent={() => (
+        <EmptyMyPoolList code={code} onShare={handleCodeShare} />
+      )}
     />
   );
 }
